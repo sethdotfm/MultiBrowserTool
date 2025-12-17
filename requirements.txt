@@ -1,0 +1,5 @@
+# MultiBrowserTool v1.0 Requirements
+
+Flask>=3.0
+playwright>=1.42
+PyYAML>=6.0
