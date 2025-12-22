@@ -2,14 +2,14 @@ server:
   port: 8010
 
 elements:
-  - id: "btn_1"
+  - id: "button"
     type: "button"
     label: "Button"
 
-  - id: "chk_agreed"
+  - id: "checkbox"
     type: "checkbox"
     label: "Checkbox"
 
-  - id: "txt_username"
+  - id: "textbox"
     type: "textbox"
     label: "Text Box"
