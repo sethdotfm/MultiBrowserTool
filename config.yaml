@@ -1,23 +1,15 @@
 server:
-  port: 5500
+  port: 8010
 
 elements:
   - id: "btn_1"
     type: "button"
-    label: "Submit Request"
-  
-  - id: "btn_2"
-    type: "button"
-    label: "Cancel"
+    label: "Button"
 
   - id: "chk_agreed"
     type: "checkbox"
-    label: "I agree to terms"
+    label: "Checkbox"
 
   - id: "txt_username"
     type: "textbox"
-    label: "Username"
-
-  - id: "btn_fast"
-    type: "button"
-    label: "Fast Click"
+    label: "Text Box"
