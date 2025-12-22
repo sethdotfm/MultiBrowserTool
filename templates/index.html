@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiBrowserTool Interaction Test</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .element-container { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; max-width: 400px; }
+        .log-container { background: #000; color: #0f0; padding: 20px; font-family: monospace; height: 300px; overflow-y: auto; margin-top: 20px; }
+        .log-entry { margin: 2px 0; }
+        label { margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <h1>MultiBrowserTool Interaction Test</h1>
+    
+    <div id="ui-area">
+        {% for el in elements %}
+        <div class="element-container">
+            {% if el.type == 'button' %}
+                <button id="{{ el.id }}">{{ el.label }}</button>
+            {% elif el.type == 'checkbox' %}
+                <label for="{{ el.id }}">{{ el.label }}</label>
+                <input type="checkbox" id="{{ el.id }}">
+            {% elif el.type == 'textbox' %}
+                <label for="{{ el.id }}">{{ el.label }}</label>
+                <input type="text" id="{{ el.id }}">
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <h3>Interaction Log</h3>
+    <div id="console" class="log-container"></div>
+
+    <script>
+        const logContainer = document.getElementById('console');
+
+        function appendLog(text) {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.textContent = text;
+            logContainer.insertBefore(div, logContainer.firstChild); // Prepend for newest top
+        }
+
+        async function logAction(elementId, actionType, value = null) {
+            // Local fallback time immediate feedback
+            // appendLog(`[PENDING] ${elementId} ${actionType}...`);
+            
+            try {
+                const response = await fetch('/log_action', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: elementId,
+                        action: actionType,
+                        value: value,
+                        client_time: Date.now() / 1000 // Send seconds timestamp
+                    })
+                });
+                const data = await response.json();
+                appendLog(`[${data.server_time}] ID: ${data.id}, Action: ${data.action}` + (data.value ? `, Value: ${data.value}` : ''));
+            } catch (e) {
+                appendLog(`[ERROR] Failed to log interaction for ${elementId}`);
+            }
+        }
+
+        // Attach listeners
+        {% for el in elements %}
+            {% if el.type == 'button' %}
+                document.getElementById("{{ el.id }}").addEventListener('click', () => logAction("{{ el.id }}", "click"));
+            {% elif el.type == 'checkbox' %}
+                document.getElementById("{{ el.id }}").addEventListener('change', (e) => logAction("{{ el.id }}", "change", e.target.checked));
+            {% elif el.type == 'textbox' %}
+                document.getElementById("{{ el.id }}").addEventListener('input', (e) => logAction("{{ el.id }}", "input", e.target.value));
+            {% endif %}
+        {% endfor %}
+    </script>
+</body>
+</html>
