@@ -2,14 +2,6 @@ server:
   port: 8010
 
 elements:
-  - id: "button"
+  - id: "BUTTON_REC_BUTTON"
     type: "button"
-    label: "Button"
-
-  - id: "checkbox"
-    type: "checkbox"
-    label: "Checkbox"
-
-  - id: "textbox"
-    type: "textbox"
-    label: "Text Box"
+    label: "Sony VENICE 2 Record Toggle"
