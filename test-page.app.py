@@ -14,10 +14,15 @@ def load_config():
 config = load_config()
 port = config.get('server', {}).get('port', 5000)
 elements = config.get('elements', [])
+identifier = config.get('identifier', {})
 
 @app.route('/')
 def index():
-    return render_template('index.html', elements=elements)
+    # Reload config to get latest changes
+    config = load_config()
+    elements = config.get('elements', [])
+    identifier = config.get('identifier', {})
+    return render_template('index.html', elements=elements, identifier=identifier)
 
 @app.route('/log_action', methods=['POST'])
 def log_action():
