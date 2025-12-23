@@ -3,6 +3,7 @@ import time
 import yaml
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -16,7 +17,33 @@ port = config.get('server', {}).get('port', 5000)
 elements = config.get('elements', [])
 identifier = config.get('identifier', {})
 
+def check_auth(username, password):
+    """Checks whether a username/password combination is valid."""
+    config = load_config()
+    auth = config.get('auth', {})
+    valid_username = auth.get('username', 'admin')
+    valid_password = auth.get('password', 'password')
+    return username == valid_username and password == valid_password
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return jsonify({'message': 'Authentication required'}), 401, {'WWW-Authenticate': 'Basic realm="Login Required"'}
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        config = load_config()
+        if not config.get('auth', {}).get('enabled', False):
+            return f(*args, **kwargs)
+            
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
+
 @app.route('/')
+@requires_auth
 def index():
     # Reload config to get latest changes
     config = load_config()
@@ -25,6 +52,7 @@ def index():
     return render_template('index.html', elements=elements, identifier=identifier)
 
 @app.route('/log_action', methods=['POST'])
+@requires_auth
 def log_action():
     data = request.json
     # High precision server time

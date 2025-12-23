@@ -1,6 +1,11 @@
 server:
   port: 8010
 
+auth:
+  enabled: false
+  username: "admin"
+  password: "password"
+
 identifier:
   number: 1
   color: "#964B00"
