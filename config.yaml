@@ -1,6 +1,10 @@
 server:
   port: 8010
 
+identifier:
+  number: 1
+  color: "#964B00"
+
 elements:
   - id: "BUTTON_REC_BUTTON"
     type: "button"
