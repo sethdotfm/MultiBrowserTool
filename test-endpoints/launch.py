@@ -108,14 +108,14 @@ class EndpointManager:
         time.sleep(1)
         self.start_endpoint(name)
 
-    def launch_kiosk(self, name: str):
+    def launch_browser(self, name: str):
         if name not in self.endpoints:
              print(f"Endpoint '{name}' not found.")
              return
         
         endpoint = self.endpoints[name]
         url = f"http://localhost:{endpoint['port']}"
-        print(f"Opening {name} in Kiosk mode ({url})...")
+        print(f"Opening {name} in browser ({url})...")
         
         # Try to find Chrome
         chrome_paths = [
@@ -133,7 +133,7 @@ class EndpointManager:
         
         if cmd:
             try:
-                subprocess.Popen([cmd, "--kiosk", "--new-window", url])
+                subprocess.Popen([cmd, "--new-window", url])
             except FileNotFoundError:
                 print("Could not launch chrome. Please ensure it is installed or in PATH.")
                 webbrowser.open(url) # Fallback to default browser
@@ -165,7 +165,7 @@ Commands:
   start [all|name]    - Start specific endpoint or all
   stop [all|name]     - Stop specific endpoint or all
   restart [all|name]  - Restart specific endpoint or all
-  kiosk [all|name]    - Open endpoint(s) in Kiosk mode
+  browser [all|name]  - Open endpoint(s) in browser
   reload              - Rediscover endpoints from disk
   help                - Show this help message
   quit, exit          - Stop all and exit
@@ -232,12 +232,12 @@ def main():
             else:
                 manager.restart_endpoint(arg)
 
-        elif cmd == "kiosk":
+        elif cmd == "browser":
             if arg == "all" or arg is None:
                 for name in manager.endpoints:
-                    manager.launch_kiosk(name)
+                    manager.launch_browser(name)
             else:
-                manager.launch_kiosk(arg)
+                manager.launch_browser(arg)
         else:
             print(f"Unknown command: {cmd}")
 
