@@ -1,0 +1,16 @@
+server:
+  port: 8010
+
+auth:
+  enabled: false
+  username: "admin"
+  password: "password"
+
+identifier:
+  number: 1
+  color: "#964B00"
+
+elements:
+  - id: "BUTTON_REC_BUTTON"
+    type: "button"
+    label: "Sony VENICE 2 Record Toggle"
