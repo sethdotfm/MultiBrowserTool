@@ -1,1 +1,27 @@
-# MultiBrowserTool v1.0 - Types
+venice2:
+    name: "Sony VENICE 2"
+    type: "camera"
+    url: "http://localhost:8011"
+    port: 80
+    path: "/"
+    browser_auth:
+        username: "admin"
+        password: "password"
+    actions:
+        toggle_record:
+            name: "Toggle Record"
+            js_injection: "document.getElementById('BUTTON_REC_BUTTON').click()"
+
+kipro:
+    name: "AJA KiPro"
+    type: "recorder"
+    url: "http://localhost:8013"
+    port: 8080
+    path: "/"
+    actions:
+        start_record:
+            name: "Start Record"
+            js_injection: "document.getElementById('start_record').click()"
+        stop_record:
+            name: "Stop Record"
+            js_injection: "document.getElementById('stop_record').click()"

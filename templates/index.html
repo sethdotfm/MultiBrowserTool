@@ -1,13 +1,86 @@
-<!-- MultiBrowserTool v1.0 - index.html -->
 <!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>MultiBrowserTool</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config.page_title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 
 <body>
+    <header>
+        <div class="header-left">
+            <h1>{{ config.page_title }}</h1>
+            <div id="connection-status" class="status-indicator offline">Disconnected</div>
+        </div>
+        <div class="header-right">
+            <span id="clock">00:00:00</span>
+        </div>
+    </header>
 
+    <main>
+        <div class="dashboard-grid"
+            style="grid-template-columns: 200px 150px repeat({{ config.actions|length }}, 1fr);">
+            <div class="grid-header">System</div>
+            <div class="grid-header">Status</div>
+            {% for action_key, action in config.actions.items() %}
+            <div class="grid-header">{{ action.name }}</div>
+            {% endfor %}
+
+            <!-- Global Actions Row -->
+            <div class="grid-cell global-header">ALL SYSTEMS</div>
+            <div class="grid-cell global-header"></div> <!-- Status Spacer -->
+            {% for action_key, action in config.actions.items() %}
+            <div class="grid-cell global-action" data-action="{{ action_key }}">
+                <button class="action-btn global-btn">ALL {{ action.name }}</button>
+            </div>
+            {% endfor %}
+
+            {% for group_key, group in config.resolved_systems.items() %}
+            <!-- Group Header Row -->
+            <div class="grid-cell group-header">{{ group.name }}</div>
+            <div class="grid-cell group-header"></div> <!-- Status Spacer -->
+            {% for action_key, action in config.actions.items() %}
+            <div class="grid-cell group-action">
+                <button class="action-btn group-btn" data-group="{{ group_key }}" data-action="{{ action_key }}">
+                    {{ group.name }} {{ action.name }}
+                </button>
+            </div>
+            {% endfor %}
+
+            {% for sys_id, sys_data in group.systems.items() %}
+            <div class="grid-cell system-name">{{ sys_data.name }}</div>
+            <div class="grid-cell system-status" id="status-{{ sys_id }}">Ready</div>
+
+            {% for action_key, action_def in config.actions.items() %}
+            <!-- Check if this system supports this action -->
+            {% set sys_type = sys_data.type %}
+            {% set mapped_action = action_def.mappings.get(sys_type) %}
+
+            {% if mapped_action %}
+            <div class="grid-cell action-cell" data-system="{{ sys_id }}" data-group="{{ group_key }}"
+                data-action="{{ action_key }}">
+                <button class="action-btn">{{ action_def.name }}</button>
+            </div>
+            {% else %}
+            <div class="grid-cell empty-cell"></div>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            {% endfor %}
+        </div>
+    </main>
+    </main>
+    </main>
+    <div id="notification-area"></div>
+    <div id="disconnect-overlay">
+        <h1>Disconnected</h1>
+        <p>Attempting to Reconnect...</p>
+    </div>
 </body>
+
 
 </html>

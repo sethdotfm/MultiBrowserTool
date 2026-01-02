@@ -1,1 +1,347 @@
-/* MultiBrowserTool v1.0 - style.css */
+:root {
+    --bg-color: #121212;
+    --surface-color: #1e1e1e;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --accent-color: #007acc;
+    --success-color: #4caf50;
+    --error-color: #f44336;
+    --border-color: #333;
+    --grid-gap: 1px;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    background-color: var(--surface-color);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+#clock {
+    font-family: 'Consolas', monospace;
+    font-size: 1.2rem;
+    color: var(--accent-color);
+}
+
+.status-indicator {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-indicator.online {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: var(--success-color);
+}
+
+.status-indicator.offline {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: var(--error-color);
+}
+
+main {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.dashboard-grid {
+    display: grid;
+    /* First two columns are System and Status, then dynamic action columns */
+    /* We need to define this dynamically or generic. Let's use autofill or just known count */
+    /* Since we can't easily injection Jinja into CSS, we'll let the grid auto-flow or set explicit cols if possible. 
+       Actually, grid-template-columns: auto auto repeat(N, 1fr) is best, but N is dynamic. 
+       We will rely on the HTML structure and use repeat(auto-fit) or just standard flow?
+       Better: Use 'display: grid' with inline style for template columns if needed, OR just flex rows.
+       Let's stick to a clean grid. We can set the style in HTML or just make sure all rows have same cell count.
+    */
+    grid-template-columns: 200px 100px repeat(auto-fit, minmax(150px, 1fr));
+    /* This dynamic column stuff is tricky without inline styles for the column count.
+       Let's assume a reasonable max and use 'auto-flow' or just set a class in HTML?
+       Actually, let's just make it a table-like grid.
+       We will add a style block in the HTML header for the column definition? 
+       No, let's just use flexbox for rows? No, grid is better for alignment.
+       
+       Let's use a simpler approach: 
+       The container sets the grid. We have (2 + NumActions) columns.
+       We can set `style="grid-template-columns: ..."` on the .dashboard-grid element in HTML.
+    */
+    gap: var(--grid-gap);
+    background-color: var(--border-color);
+    /* Creates the border lines */
+    border: 1px solid var(--border-color);
+}
+
+/* In HTML we will add: style="grid-template-columns: 200px 150px repeat({{ config.actions|length }}, 1fr);" */
+
+.grid-header {
+    background-color: #2d2d2d;
+    padding: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+
+
+.global-header {
+    background-color: #444;
+    font-weight: 700;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.global-action {
+    background-color: #333;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.global-btn {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    font-weight: 700;
+}
+
+.global-btn:hover {
+    background-color: #0099ff;
+}
+
+.group-header {
+    background-color: #252525;
+    font-weight: 600;
+    color: #ddd;
+    font-size: 0.9rem;
+    padding-left: 1rem;
+    justify-content: flex-start;
+}
+
+.group-action {
+    background-color: #252525;
+}
+
+.group-btn {
+    background-color: #444;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+}
+
+.grid-cell {
+    background-color: var(--surface-color);
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+}
+
+.system-name {
+    justify-content: flex-start;
+    padding-left: 1rem;
+    font-weight: 500;
+}
+
+.system-status {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.status-online {
+    color: var(--success-color);
+}
+
+.status-offline {
+    color: #bdbdbd;
+}
+
+.status-error {
+    color: var(--error-color);
+}
+
+.status-connecting {
+    color: var(--accent-color);
+    animation: pulse 1s infinite;
+}
+
+.action-btn {
+    background-color: #333;
+    color: white;
+    border: 1px solid #444;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.action-btn:hover {
+    background-color: #444;
+    border-color: #555;
+}
+
+.action-btn:active {
+    background-color: #222;
+    transform: translateY(1px);
+}
+
+/* Cell States */
+.action-cell.success .action-btn {
+    background-color: rgba(76, 175, 80, 0.2);
+    border-color: var(--success-color);
+    color: var(--success-color);
+}
+
+
+.action-cell.error .action-btn {
+    background-color: var(--error-color);
+    border-color: #d32f2f;
+    color: white;
+    animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+#notification-area {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.toast {
+    background-color: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border-left: 4px solid var(--accent-color);
+    animation: slideIn 0.3s ease-out;
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.toast.error {
+    border-left-color: var(--error-color);
+    background-color: #2a0000;
+}
+
+.toast.success {
+    border-left-color: var(--success-color);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.action-cell.loading .action-btn {
+    opacity: 0.7;
+    cursor: wait;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 0.7;
+    }
+}
+
+#disconnect-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--error-color);
+}
+
+#disconnect-overlay.visible {
+    display: flex;
+}
+
+#disconnect-overlay h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    animation: pulse 1s infinite alternate;
+}
+
+#disconnect-overlay p {
+    font-size: 1.2rem;
+    color: #fff;
+}

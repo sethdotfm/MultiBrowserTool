@@ -1,1 +1,28 @@
-# MultiBrowserTool v1.0 - Config
+port: 5000
+page_title: "MultiBrowserTool"
+headless: false
+
+systems:
+    cameras:
+        name: "Cameras"
+        systems:
+            camera1:
+                type: "venice2"
+                name: "A Cam"
+                url: "http://localhost:8011"
+                browser_auth:
+                    username: "admin"
+                    password: "password"
+            camera2:
+                type: "venice2"
+                name: "B Cam"
+                url: "http://localhost:8012"
+                browser_auth:
+                    username: "admin"
+                    password: "password"
+
+actions:
+    record_toggle:
+        name: "Record Toggle"
+        mappings:
+            venice2: toggle_record

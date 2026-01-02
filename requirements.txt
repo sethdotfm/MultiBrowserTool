@@ -1,5 +1,6 @@
-# MultiBrowserTool v1.0 Requirements
+flask
+flask-socketio
+playwright
+pyyaml
+requests
 
-Flask>=3.0
-playwright>=1.42
-PyYAML>=6.0
