@@ -8,6 +8,40 @@ The interface will be a simple web inteface hosted by Flask. The design is a lar
 
 For types.yaml, we will begin with a single execution method: JS Injection. We will use playwright to inject JS into the DOM.
 
+Feedback and State Monitoring:
+    Maybe we can add state monitoring per system in the future. For now we will just update the background color of the action cell to green if the command was successful, and red if it failed.
+
+Browser Persistence:
+    We will use playwright to persist the browser session. This will allow us to execute commands without having to log in to the device each time, and will reduce latency.
+
+Resource Management:
+    Let's keep all of the instances open in parallel, these are powerful machines and sync is a bigger concern than resource usage.
+
+Toggle Logic:
+    A good question. This might tie in with feedback. We could poll the dom for style changes. But I think for now, we will just execute the command and let the user know if it failed.
+
+Error Handling:
+    We will use playwright to handle errors. If the command fails, we will update the background color of the action cell to red. If a connection is lost, we will update the background color of the system cell to red. Uptime is a key concern.
+    That said, operators will be monitoring the interfaces of the individual systems, so they will catch any failures.
+
+Latency:
+    Not a concern. The devices are genlocked and linear timecode is used. As long as the commands are executed within a few hundred milliseconds of each other, they will be in sync.
+
+Multi-User Support:
+    For now, we will anticipate a single user. However, since we will use sockets for interface updates, we can easily add multi-user support in the future.
+
+Versioning:
+    types.yaml can handle versioning of system definitions by simply appending a version number to the system name. For example, "venice2_v1" and "venice2_v2".
+
+Security:
+    No security will be implemented at this time. This is only being used on a local network.
+
+Logging:
+    We should implement a fairly verbose logging system to track the state of the system. This is important for tracking failures and improving the tool.
+
+
+
+
 A first draft of the .yaml files are as follows:
 
 ```yaml
@@ -78,15 +112,13 @@ systems: # Columns
 actions: # Rows 
     start_record: # Action name, required
         name: "Start Record" # Friendly name, fallback to action def if blank
-        systems: venice2
-            execute: toggle_record
-        systems: kipro
-            execute: start_record
+        mappings:
+            venice2: toggle_record
+            kipro: start_record
     stop_record: # Action name, required
         name: "Stop Record" # Friendly name, fallback to action def if blank
-        systems: venice2
-            execute: toggle_record
-        systems: kipro
-            execute: stop_record
+        mappings:
+            venice2: toggle_record
+            kipro: stop_record
 
 ```
