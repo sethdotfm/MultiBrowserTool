@@ -21,6 +21,18 @@ def load_config():
     except FileNotFoundError:
         print(f"Error: {config_path} not found.")
         return None
+
+    # Load secrets.yaml if it exists
+    secrets_path = os.path.join(base_dir, 'secrets.yaml')
+    if os.path.exists(secrets_path):
+        try:
+            with open(secrets_path, 'r') as f:
+                secrets_def = yaml.safe_load(f)
+                if secrets_def:
+                    deep_merge(config_def, secrets_def)
+                    print(f"Loaded secrets from {secrets_path}")
+        except Exception as e:
+            print(f"Warning: Failed to load secrets.yaml: {e}")
         
     # Helper to resolve system configuration
     resolved_systems = {}
@@ -53,3 +65,11 @@ def load_config():
     config_def['types'] = types_def
     
     return config_def
+
+def deep_merge(base, update):
+    """Recursively merges update dict into base dict."""
+    for key, value in update.items():
+        if isinstance(value, dict) and key in base and isinstance(base[key], dict):
+            deep_merge(base[key], value)
+        else:
+            base[key] = value

@@ -12,15 +12,21 @@ systems:
                 url: "http://localhost:8011"
                 browser_auth:
                     username: "admin"
-                    password: "password"
+                    # password: set in secrets.yaml
             camera2:
                 type: "venice2"
                 name: "B Cam"
                 url: "http://localhost:8012"
                 browser_auth:
                     username: "admin"
-                    password: "password"
-
+                    # password: set in secrets.yaml
+            camera3:
+                type: "venice2"
+                name: "C Cam"
+                url: "http://localhost:8013"
+                browser_auth:
+                    username: "admin"
+                    # password: set in secrets.yaml
 actions:
     record_toggle:
         name: "Record Toggle"
